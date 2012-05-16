@@ -1,4 +1,7 @@
-
+/*
+ * TODO: add 3 or 4 preset params of cross processing
+ * Add parameter for crop or stretch
+ */
 
 /**
  * change a pixel in a imagedata structure
@@ -51,6 +54,7 @@ function processImage(ctx, width, height) {
         }
     }
     //normalise
+    //TODO extract into another function with an optional "max"
     var normalise_ratio = 255/max;
     for ( var _x = 0 ; _x < width -1; _x ++ ) {
         for ( var _y = 0 ; _y < height -1; _y ++ ) {

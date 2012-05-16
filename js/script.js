@@ -35,13 +35,13 @@ function processImage(ctx, width, height) {
         for ( var _y = 0 ; _y < height -1; _y ++ ) {
             pixel = getPixel(imageData, _x,_y);
             //cross-colour processing
-            new_r = 50*sin(pixel.r/41)+pixel.r;
-            new_g = 50*sin(pixel.g/41)+pixel.g;
-            new_b = 50*sin(pixel.b/41)+pixel.b;
+            new_r = 30*Math.sin(pixel.r/41)+pixel.r;
+            new_g = 0*Math.sin(pixel.g/41)+pixel.g;
+            new_b = 0*Math.sin(pixel.b/41)+pixel.b;
             
             pixel.r = Math.min(255, new_r);
-            pixel.g = Math.min(255, new_b);
-            pixel.b = Math.min(255, new_g);
+            pixel.g = Math.min(255, new_g);
+            pixel.b = Math.min(255, new_b);
             setPixel(imageData, _x, _y, pixel);
         }
     }

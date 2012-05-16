@@ -30,18 +30,34 @@ function getPixel(imageData, x, y) {
  */
 function processImage(ctx, width, height) {
     var imageData = ctx.getImageData(0,0,width, height);
-    var pixel, new_r, new_g, new_b;
+    var pixel, new_r, new_g, new_b, tmp_avg, max=0;
     for ( var _x = 0 ; _x < width -1; _x ++ ) {
         for ( var _y = 0 ; _y < height -1; _y ++ ) {
             pixel = getPixel(imageData, _x,_y);
             //cross-colour processing
-            new_r = 30*Math.sin(pixel.r/41)+pixel.r;
-            new_g = 0*Math.sin(pixel.g/41)+pixel.g;
-            new_b = 0*Math.sin(pixel.b/41)+pixel.b;
+            new_r = 30*Math.sin(pixel.r/41)+1.2*pixel.r;
+            new_g = -20*Math.sin(pixel.g/41)+1.2*pixel.g;
+            new_b = 10*Math.sin(pixel.b/41)+1.2*pixel.b;
+
+            tmp_avg = (new_r + new_g + new_b) / 3;
+            if ( (new_r + new_g + new_b) / 3 > max ) {
+                max = tmp_avg;
+            } 
             
             pixel.r = Math.min(255, new_r);
             pixel.g = Math.min(255, new_g);
             pixel.b = Math.min(255, new_b);
+            setPixel(imageData, _x, _y, pixel);
+        }
+    }
+    //normalise
+    var normalise_ratio = 255/max;
+    for ( var _x = 0 ; _x < width -1; _x ++ ) {
+        for ( var _y = 0 ; _y < height -1; _y ++ ) {
+            pixel = getPixel(imageData, _x,_y);
+            pixel.r = Math.min(255, pixel.r * normalise_ratio);
+            pixel.g = Math.min(255, pixel.g * normalise_ratio);
+            pixel.b = Math.min(255, pixel.b * normalise_ratio);
             setPixel(imageData, _x, _y, pixel);
         }
     }

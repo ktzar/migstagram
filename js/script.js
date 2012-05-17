@@ -38,6 +38,7 @@ function processImage(ctx, width, height) {
         for ( var _y = 0 ; _y < height -1; _y ++ ) {
             pixel = getPixel(imageData, _x,_y);
             //cross-colour processing
+            //http://en.wikipedia.org/wiki/Cross_processing
             new_r = 30*Math.sin(pixel.r/41)+1.2*pixel.r;
             new_g = -20*Math.sin(pixel.g/41)+1.2*pixel.g;
             new_b = 10*Math.sin(pixel.b/41)+1.2*pixel.b;

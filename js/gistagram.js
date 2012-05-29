@@ -38,6 +38,7 @@ var filters = {
         var ctx = cnv.getContext('2d');
         var width = cnv.width;
         var height = cnv.height;
+        console.log(params);
 
         var imageData = ctx.getImageData(0,0,width, height);
         var pixel, new_r, new_g, new_b, tmp_avg, max=0;
@@ -46,9 +47,9 @@ var filters = {
                 pixel = getPixel(imageData, _x,_y);
                 //cross-colour processing
                 //http://en.wikipedia.org/wiki/Cross_processing
-                new_r = 30*Math.sin(pixel.r/41)+1.2*pixel.r;
-                new_g = -20*Math.sin(pixel.g/41)+1.2*pixel.g;
-                new_b = 10*Math.sin(pixel.b/41)+1.2*pixel.b;
+                new_r = params[0]*Math.sin(pixel.r/41)+1.2*pixel.r;
+                new_g = params[1]*Math.sin(pixel.g/41)+1.2*pixel.g;
+                new_b = params[2]*Math.sin(pixel.b/41)+1.2*pixel.b;
 
                 tmp_avg = (new_r + new_g + new_b) / 3;
                 if ( (new_r + new_g + new_b) / 3 > max ) {

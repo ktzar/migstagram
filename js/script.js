@@ -58,6 +58,19 @@ function updatePic(files){
 
 
 $(function(){
+
+    //position the loading div on top of the canvas and hide it
+    var canvas_position = ($('#editting_canvas').position());
+    var canvas_width = ($('#editting_canvas').width());
+    var canvas_height = ($('#editting_canvas').height());
+    $('#loading').hide().css({
+        'position': 'absolute'
+        ,'top':     canvas_position.top+'px'
+        ,'left':    canvas_position.left+'px'
+        ,'width':   canvas_width+'px'
+        ,'height':  canvas_height+'px'
+    });
+
     /**
      * Click handler for the buttons
      */
@@ -68,8 +81,11 @@ $(function(){
         if (typeof filters[effect] != "function" ) {
             console.log('Effect '+effect+ ' not available');
         }else{
-            filters[effect](params, function(){
-                console.log('Effect '+effect+' finished');
+            $('#loading').fadeIn(200, function(){
+                filters[effect](params, function(){
+                    console.log('Effect '+effect+' finished');
+                    $('#loading').fadeOut();
+                });
             });
         }
     });

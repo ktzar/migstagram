@@ -5,14 +5,19 @@
     
         <title>Index</title>
         <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8">
+        <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
         <script type="text/javascript" src="js/gistagram.js" charset="utf-8"></script>
         <script type="text/javascript" src="js/script.js" charset="utf-8"></script>
         
     </head>
     <body>
         <div class="uploader">
-            <label>File to gistramanise: 
+            <label>File to migstramise: 
             <input id="image_upload" type="file" onchange="updatePic(this.files)"/>
+        </div>
+        <div class="controls">
+            <h2>Filters</h2>
+            <button data-filter="crossColour" data-filter-param="-10,10,10">Cross colour 1</button>
         </div>
         <canvas width="800px" height="600px" id="editting_canvas"></canvas>
 

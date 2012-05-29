@@ -30,9 +30,6 @@ function getPixel(imageData, x, y) {
 
 
 var filters = {
-/**
- * Process an imageData
- */
     'crossColour': function(params, cb) {
         var cnv = document.getElementById('editting_canvas');
         var ctx = cnv.getContext('2d');
@@ -72,6 +69,52 @@ var filters = {
                 pixel.g = Math.min(255, pixel.g * normalise_ratio);
                 pixel.b = Math.min(255, pixel.b * normalise_ratio);
                 setPixel(imageData, _x, _y, pixel);
+            }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        
+        //perform callback
+        if ( typeof cb == "function") {
+            cb();
+        }
+    }
+    ,'pixelate': function(params, cb) {
+        //get properties of the canvas
+        var cnv         = document.getElementById('editting_canvas');
+        var ctx         = cnv.getContext('2d');
+        var width       = cnv.width;
+        var height      = cnv.height;
+        //Parse parameters
+        var pixel_size  = parseInt(params[0]);
+        var halfpixel_size = Math.floor(pixel_size);
+
+        var imageData = ctx.getImageData(0,0,width, height);
+        var pixel, new_r, new_g, new_b, tmp_avg, max=0;
+
+        for ( var _x = 0 ; _x < width ; _x += pixel_size ) {
+            for ( var _y = 0 ; _y < height ; _y += pixel_size ) {
+
+                //initialise
+                tmp_avg = new_r = new_g = new_b = 0;
+                //calculate average halfpixel_size around
+                for (__x = _x - pixel_size/2 ; __x < _x + pixel_size/2 ; __x ++ ) {
+                    for (__y = _y - pixel_size/2 ; __y < _y + pixel_size/2 ; __y ++ ) {
+                        pixel = getPixel(imageData, _x,_y);
+                        new_r += pixel.r;
+                        new_g += pixel.g;
+                        new_b += pixel.b;
+                        tmp_avg ++;
+                    }
+                }
+                //The chosen colour
+                new_r /= tmp_avg; new_g /= tmp_avg; new_b /= tmp_avg;
+                pixel.r = new_r; pixel.g = new_g; pixel.b = new_b;
+                //Set it in the surrounding pixels
+                for (__x = _x - pixel_size/2 ; __x < _x + pixel_size/2 ; __x ++ ) {
+                    for (__y = _y - pixel_size/2 ; __y < _y + pixel_size/2 ; __y ++ ) {
+                        setPixel(imageData, __x, __y, pixel);
+                    }
+                }
             }
         }
         ctx.putImageData(imageData, 0, 0);

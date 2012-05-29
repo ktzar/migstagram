@@ -33,7 +33,12 @@ var filters = {
 /**
  * Process an imageData
  */
-    'crossColour': function(ctx, width, height, params) {
+    'crossColour': function(params, cb) {
+        var cnv = document.getElementById('editting_canvas');
+        var ctx = cnv.getContext('2d');
+        var width = cnv.width;
+        var height = cnv.height;
+
         var imageData = ctx.getImageData(0,0,width, height);
         var pixel, new_r, new_g, new_b, tmp_avg, max=0;
         for ( var _x = 0 ; _x < width -1; _x ++ ) {
@@ -69,5 +74,10 @@ var filters = {
             }
         }
         ctx.putImageData(imageData, 0, 0);
+        
+        //perform callback
+        if ( typeof cb == "function") {
+            cb();
+        }
     }
 }

@@ -68,9 +68,9 @@ $(function(){
         if (typeof filters[effect] != "function" ) {
             console.log('Effect '+effect+ ' not available');
         }else{
-            var cnv = document.getElementById('editting_canvas');
-            var ctx = cnv.getContext('2d');
-            filters[effect](ctx, cnv.width, cnv.height, params);
+            filters[effect](params, function(){
+                console.log('Effect '+effect+' finished');
+            });
         }
     });
 });

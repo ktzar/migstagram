@@ -106,16 +106,12 @@ var Migstagram = function(){
 
     this.filters = {
         'crossColour': function(params, cb) {
-            var cnv = document.getElementById('editting_canvas');
-            var ctx = cnv.getContext('2d');
-            var width = cnv.width;
-            var height = cnv.height;
             console.log(params);
 
-            var imageData = ctx.getImageData(0,0,width, height);
+            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;
-            for ( var _x = 0 ; _x < width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < height -1; _y ++ ) {
+            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
+                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
                     //cross-colour processing
                     //http://en.wikipedia.org/wiki/Cross_processing
@@ -137,8 +133,8 @@ var Migstagram = function(){
             //normalise
             //TODO extract into another function with an optional "max"
             var normalise_ratio = 255/max;
-            for ( var _x = 0 ; _x < width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < height -1; _y ++ ) {
+            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
+                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
                     pixel.r = Math.min(255, pixel.r * normalise_ratio);
                     pixel.g = Math.min(255, pixel.g * normalise_ratio);
@@ -154,20 +150,15 @@ var Migstagram = function(){
             }
         }
         ,'pixelate': function(params, cb) {
-            //get properties of the canvas
-            var cnv         = document.getElementById('editting_canvas');
-            var ctx         = cnv.getContext('2d');
-            var width       = cnv.width;
-            var height      = cnv.height;
             //Parse parameters
             var pixel_size  = parseInt(params[0]);
             var halfpixel_size = Math.floor(pixel_size);
 
-            var imageData = ctx.getImageData(0,0,width, height);
+            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;
 
-            for ( var _x = 0 ; _x < width ; _x += pixel_size ) {
-                for ( var _y = 0 ; _y < height ; _y += pixel_size ) {
+            for ( var _x = 0 ; _x < cnv.width ; _x += pixel_size ) {
+                for ( var _y = 0 ; _y < cnv.height ; _y += pixel_size ) {
 
                     //initialise
                     tmp_avg = new_r = new_g = new_b = 0;

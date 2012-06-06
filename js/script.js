@@ -29,7 +29,12 @@ $(function(){
      */
     $('.controls button.effect').click(function(){
         var effect = $(this).attr('data-filter');
-        var params = $(this).attr('data-filter-param').split(',');
+        var params = $(this).attr('data-filter-param');
+        if ( typeof params != "undefined") {
+            params = params.split(',');
+        }else{
+            params = false;
+        }
 
         if (typeof myMigstagram.filters[effect] != "function" ) {
             console.log('Effect '+effect+ ' not available');

@@ -105,7 +105,51 @@ var Migstagram = function(){
 
 
     this.filters = {
-        'crossColour': function(params, cb) {
+        //params is r g or b, the reference channel, defaults to an average of the 3
+        'bw': function(params, cb) {
+            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
+            var pixel, new_r, new_g, new_b, tmp_avg, max=0, ref = 0;
+            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
+                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+                    pixel = getPixel(imageData, _x,_y);
+                    if ( params ) {
+                        ref = pixel[params];
+                    }
+                    if ( params != false && typeof pixel[params] != "undefined") {
+                        ref = pixel[params];
+                    }else{
+                        ref = (pixel.r + pixel.g + pixel.b)/3;
+                    }
+                    pixel.r = pixel.g = pixel.b = ref;
+                    setPixel(imageData, _x, _y, pixel);
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+            
+            //perform callback
+            if ( typeof cb == "function") {
+                cb();
+            }
+        },
+        'sepia': function(params, cb) {
+            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
+            var pixel, new_r, new_g, new_b, tmp_avg, max=0;
+            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
+                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+                    pixel = getPixel(imageData, _x,_y);
+                    pixel.r = pixel.g = pixel.b = Math.min(255, pixel.b);
+                    pixel.r = 40+pixel.r;//it'll automatically set it to 255 if higher
+                    setPixel(imageData, _x, _y, pixel);
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+            
+            //perform callback
+            if ( typeof cb == "function") {
+                cb();
+            }
+        }
+        ,'crossColour': function(params, cb) {
             console.log(params);
 
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);

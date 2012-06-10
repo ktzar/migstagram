@@ -103,6 +103,14 @@ var Migstagram = function(){
 
     }
 
+    this.callFilter = function(filterName, params, cb) {
+        if ( typeof this.filters[filterName] == 'function' ) {
+            this.filters[filterName](params, cb);
+        } else {
+            console.log('Effect '+effect+ ' not available');
+        }
+    }
+
 
     this.filters = {
         //params is r g or b, the reference channel, defaults to an average of the 3
@@ -228,6 +236,44 @@ var Migstagram = function(){
                 }
             }
             ctx.putImageData(imageData, 0, 0);
+            
+            //perform callback
+            if ( typeof cb == "function") {
+                cb();
+            }
+        }
+        ,'blur': function(params, cb) {
+            //Parse parameters
+            var blur_amount    = Math.max(2,parseInt(params[0]));
+            console.log('blur_amount', blur_amount);
+
+            var imageDataIn  = ctx.getImageData(0,0,cnv.width, cnv.height);
+            var imageDataOut = ctx.getImageData(0,0,cnv.width, cnv.height);
+            var pixel, new_r, new_g, new_b, tmp_avg, max=0;
+
+            for ( var _x = 0 ; _x < cnv.width ; _x += 1 ) {
+                for ( var _y = 0 ; _y < cnv.height ; _y += 1 ) {
+
+                    //initialise
+                    tmp_avg = new_r = new_g = new_b = 0;
+                    //calculate average blur_around pixels around
+                    for (var __x = _x - blur_amount ; __x < _x + blur_amount ; __x ++ ) {
+                        for (var __y = _y - blur_amount ; __y < _y + blur_amount ; __y ++ ) {
+                            pixel = getPixel(imageDataIn, __x,__y);
+                            new_r += pixel.r;
+                            new_g += pixel.g;
+                            new_b += pixel.b;
+                            tmp_avg ++;
+                        }
+                    }
+                    //The chosen colour
+                    new_r /= tmp_avg; new_g /= tmp_avg; new_b /= tmp_avg;
+                    pixel.r = new_r;pixel.g = new_g; pixel.b = new_b;
+                    //Set it in the surrounding pixels
+                    setPixel(imageDataOut, _x, _y, pixel);
+                }
+            }
+            ctx.putImageData(imageDataOut, 0, 0);
             
             //perform callback
             if ( typeof cb == "function") {

@@ -36,16 +36,12 @@ $(function(){
             params = false;
         }
 
-        if (typeof myMigstagram.filters[effect] != "function" ) {
-            console.log('Effect '+effect+ ' not available');
-        }else{
-            $('#loading').fadeIn(200, function(){
-                myMigstagram.filters[effect](params, function(){
-                    console.log('Effect '+effect+' finished');
-                    $('#loading').fadeOut();
-                });
+        $('#loading').fadeIn(200, function(){
+            myMigstagram.callFilter(effect, params, function(){
+                console.log('Effect '+effect+' finished');
+                $('#loading').fadeOut();
             });
-        }
+        });
     });
     $('.controls .reset').click(function(){
         myMigstagram.resetPicture();

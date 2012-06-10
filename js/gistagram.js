@@ -6,7 +6,8 @@ var Migstagram = function(){
     var cnv = document.getElementById('editting_canvas');
     var ctx = cnv.getContext('2d');
 
-    this.originalImageData;
+    this.originalImageData = null;
+    this.previousImageData = null;
 
 
     reader.onload = function(e) {
@@ -97,15 +98,20 @@ var Migstagram = function(){
         }
     }
 
+    this.undo = function()
+    {
+        ctx.putImageData(that.previousImageData, 0, 0);
+    }
+
     this.resetPicture = function()
     {
         ctx.putImageData(that.originalImageData, 0, 0);
-
     }
 
     this.callFilter = function(filterName, params, cb) {
-        if ( typeof this.filters[filterName] == 'function' ) {
-            this.filters[filterName](params, cb);
+        that.previousImageData = ctx.getImageData(0,0,cnv.width, cnv.height);
+        if ( typeof that.filters[filterName] == 'function' ) {
+            that.filters[filterName](params, cb);
         } else {
             console.log('Effect '+effect+ ' not available');
         }

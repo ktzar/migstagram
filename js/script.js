@@ -47,4 +47,8 @@ $(function(){
         myMigstagram.resetPicture();
         console.log('Reset image');
     });
+    $('.controls .undo').click(function(){
+        myMigstagram.undo();
+        console.log('Undo');
+    });
 });

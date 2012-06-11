@@ -164,8 +164,6 @@ var Migstagram = function(){
             }
         }
         ,'crossColour': function(params, cb) {
-            console.log(params);
-
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;
             for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
@@ -251,8 +249,6 @@ var Migstagram = function(){
         ,'blur': function(params, cb) {
             //Parse parameters
             var blur_amount    = Math.max(2,parseInt(params[0]));
-            console.log('blur_amount', blur_amount);
-
             var imageDataIn  = ctx.getImageData(0,0,cnv.width, cnv.height);
             var imageDataOut = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;

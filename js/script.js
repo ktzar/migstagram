@@ -1,6 +1,3 @@
-
-
-
 var myMigstagram;
 $(function(){
 
@@ -40,6 +37,7 @@ $(function(){
             myMigstagram.callFilter(effect, params, function(){
                 console.log('Effect '+effect+' finished');
                 $('#loading').fadeOut();
+                $('.controls .undo').removeAttr('disabled').html('Undo '+effect);
             });
         });
     });
@@ -49,6 +47,7 @@ $(function(){
     });
     $('.controls .undo').click(function(){
         myMigstagram.undo();
+        $('.controls .undo').attr('disabled', 'true').html('Undo');
         console.log('Undo');
-    });
+    }).attr('disabled', 'true');
 });

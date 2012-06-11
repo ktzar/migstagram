@@ -282,6 +282,46 @@ var Migstagram = function(){
                 cb();
             }
         }
+        ,'vignette': function(params, cb) {
+            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
+            var pixel, new_r, new_g, new_b, tmp_avg, max=0, dist_to_center;
+            
+            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
+                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+                    pixel = getPixel(imageData, _x,_y);
+                    //cross-colour processing
+                    //http://en.wikipedia.org/wiki/Cross_processing
+                    
+                    dist_to_center = Math.floor(Math.pow(Math.sqrt(
+                        Math.abs( _y - cnv.height/2) + 
+                        Math.abs( _x - cnv.width/2 )
+                    ), 2));
+
+                    dist_to_center/=10;
+
+                    new_r = pixel.r - dist_to_center;
+                    new_g = pixel.g - dist_to_center;
+                    new_b = pixel.b - dist_to_center;
+
+
+                    tmp_avg = (new_r + new_g + new_b) / 3;
+                    if ( (new_r + new_g + new_b) / 3 > max ) {
+                        max = tmp_avg;
+                    } 
+
+                    pixel.r = Math.min(255, new_r);
+                    pixel.g = Math.min(255, new_g);
+                    pixel.b = Math.min(255, new_b);
+                    setPixel(imageData, _x, _y, pixel);
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+            
+            //perform callback
+            if ( typeof cb == "function") {
+                cb();
+            }
+        }
     }
 };
 

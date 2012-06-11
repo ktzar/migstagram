@@ -289,14 +289,14 @@ var Migstagram = function(){
             for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
                 for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
-                    //cross-colour processing
-                    //http://en.wikipedia.org/wiki/Cross_processing
                     
+                    //Distance from the current pixel to the center
                     dist_to_center = Math.floor(Math.pow(Math.sqrt(
                         Math.abs( _y - cnv.height/2) + 
                         Math.abs( _x - cnv.width/2 )
                     ), 2));
 
+                    //adjust how much it'll darken the image
                     dist_to_center/=10;
 
                     new_r = pixel.r - dist_to_center;

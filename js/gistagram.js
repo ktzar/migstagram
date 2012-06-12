@@ -41,8 +41,7 @@ var Migstagram = function(){
 
 
     /*
-     * TODO: add 3 or 4 preset params of cross processing
-     * Add parameter for crop or stretch
+     * TODO * Add parameter for crop or stretch
      */
 
     /**
@@ -106,6 +105,11 @@ var Migstagram = function(){
     this.resetPicture = function()
     {
         ctx.putImageData(that.originalImageData, 0, 0);
+    }
+
+    this.save = function()
+    {
+        document.location.href = cnv.toDataURL("image/jpeg");
     }
 
     this.callFilter = function(filterName, params, cb) {

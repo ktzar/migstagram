@@ -14,7 +14,6 @@ $(function(){
         e.preventDefault();
     }
     var dropHandler = function(e) {
-        console.log(e);
         e.stopPropagation();
         e.preventDefault();
 
@@ -76,6 +75,7 @@ $(function(){
             });
         });
     });
+    //Actions of the operations buttons
     $('.controls .reset').click(function(){
         myMigstagram.resetPicture();
         $('.controls .undo').attr('disabled', 'true').html('Undo');
@@ -84,6 +84,9 @@ $(function(){
         myMigstagram.undo();
         $('.controls .undo').attr('disabled', 'true').html('Undo');
     }).attr('disabled', 'true');
+    $('.controls .save').click(function(){
+        myMigstagram.save();
+    });
 
 
     //Accordion

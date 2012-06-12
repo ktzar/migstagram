@@ -7,6 +7,32 @@ $(function(){
         }
     });
 
+ 
+    var noopHandler = function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    var dropHandler = function(e) {
+        console.log(e);
+        e.stopPropagation();
+        e.preventDefault();
+
+        var files = e.dataTransfer.files;
+        var count = files.length;
+        
+        // Only call the handler if 1 or more files was dropped.
+        if ( count > 0 ) {
+            $("#dropbox").hide();
+            myMigstagram.updatePic(files);
+        }
+    }
+    //File Drag and Drop
+    var dropbox = document.getElementById("dropbox")
+    dropbox.addEventListener("dragenter",   noopHandler, false);
+    dropbox.addEventListener("dragexit",    noopHandler, false);
+    dropbox.addEventListener("dragover",    noopHandler, false);
+    dropbox.addEventListener("drop",        dropHandler, false);
+
     myMigstagram = new Migstagram();
 
     //position the loading div on top of the canvas and hide it
@@ -19,6 +45,14 @@ $(function(){
         ,'left':    canvas_position.left+'px'
         ,'width':   canvas_width+'px'
         ,'height':  canvas_height+'px'
+    });
+    var dropbox_padding = 10;
+    $('#dropbox').css({
+        'position': 'absolute'
+        ,'top':     (canvas_position.top + dropbox_padding)+'px'
+        ,'left':    (canvas_position.left + dropbox_padding)+'px'
+        ,'width':   (canvas_width - dropbox_padding*2)+'px'
+        ,'height':  (canvas_height - dropbox_padding*2)+'px'
     });
 
     /**
@@ -43,11 +77,10 @@ $(function(){
     });
     $('.controls .reset').click(function(){
         myMigstagram.resetPicture();
-        console.log('Reset image');
+        $('.controls .undo').attr('disabled', 'true').html('Undo');
     });
     $('.controls .undo').click(function(){
         myMigstagram.undo();
         $('.controls .undo').attr('disabled', 'true').html('Undo');
-        console.log('Undo');
     }).attr('disabled', 'true');
 });

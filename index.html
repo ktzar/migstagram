@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
     
-        <title>Index</title>
+        <title>Migstagram</title>
         <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8">
         <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
         <script type="text/javascript" src="js/gistagram.js" charset="utf-8"></script>
@@ -16,27 +16,35 @@
             <input id="image_upload" type="file"/>
         </div>
         <div class="controls">
-            <h2>Filters</h2>
-            <button class="effect" data-filter="crossColour" data-filter-param="30,-20,10">Cross colour 1</button>
-            <button class="effect" data-filter="crossColour" data-filter-param="10,-30,-20">Cross colour 2</button>
-            <button class="effect" data-filter="sepia">Sepia</button>
-            <button class="effect" data-filter="bw">Black and White (average)</button>
-            <button class="effect" data-filter="bw" data-filter-param="b">Black and White (Blue channel)</button>
-            <button class="effect" data-filter="bw" data-filter-param="r">Black and White (Red channel)</button>
-            <button class="effect" data-filter="bw" data-filter-param="b">Black and White (Green channel)</button>
-            <hr/>
-            <button class="effect" data-filter="pixelate" data-filter-param="4">Pixelate 4px</button>
-            <button class="effect" data-filter="pixelate" data-filter-param="10">Pixelate 10px</button>
-            <button class="effect" data-filter="pixelate" data-filter-param="20">Pixelate 20px</button>
-            <hr/>
-            <button class="effect" data-filter="blur" data-filter-param="3">Blur 3px</button>
-            <button class="effect" data-filter="vignette">Vignette</button>
-            <hr/>
-            <button class="reset">Reset image</button>
-            <button class="undo">Undo</button>
+            <div class="vscroll">
+                <h2>Filters</h2>
+                <h3>Colours</h3>
+                <button class="effect" data-filter="crossColour" data-filter-param="30,-20,10">Cross colour 1</button>
+                <button class="effect" data-filter="crossColour" data-filter-param="10,-30,-20">Cross colour 2</button>
+                <button class="effect" data-filter="sepia">Sepia</button>
+                <button class="effect" data-filter="bw">Black and White (average)</button>
+                <button class="effect" data-filter="bw" data-filter-param="b">Black and White (Blue channel)</button>
+                <button class="effect" data-filter="bw" data-filter-param="r">Black and White (Red channel)</button>
+                <button class="effect" data-filter="bw" data-filter-param="b">Black and White (Green channel)</button>
+                <hr/>
+                <h3>Pixelate</h3>
+                <button class="effect" data-filter="pixelate" data-filter-param="4">Pixelate 4px</button>
+                <button class="effect" data-filter="pixelate" data-filter-param="10">Pixelate 10px</button>
+                <button class="effect" data-filter="pixelate" data-filter-param="20">Pixelate 20px</button>
+                <hr/>
+                <h3>Blur</h3>
+                <button class="effect" data-filter="blur" data-filter-param="3">Blur 3px</button>
+                <hr/>
+                <h3>Vignettes</h3>
+                <button class="effect" data-filter="vignette">Vignette</button>
+                <hr/>
+                <button class="reset">Reset image</button>
+                <button class="undo">Undo</button>
+            </div>
         </div>
         <canvas width="800px" height="600px" id="editting_canvas"></canvas>
         <div id="loading"><span>Loading</span></div>
+        <div id="dropbox"><span>Drop your files here</span></div>
     </body>
 </html>
 </html>

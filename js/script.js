@@ -84,4 +84,12 @@ $(function(){
         myMigstagram.undo();
         $('.controls .undo').attr('disabled', 'true').html('Undo');
     }).attr('disabled', 'true');
+
+
+    //Accordion
+    $('.accordion>.accordion-content').hide();
+    $('.accordion>h2').click(function(){
+        $('.accordion>.accordion-content').slideUp();
+        $(this).parent('.accordion').first().find('.accordion-content').slideDown();
+    });
 });

@@ -3,6 +3,7 @@ $(function(){
 
     $('#image_upload').on('change', function(e){
         if (typeof e.target.files != "undefined") {
+            $("#dropbox").hide();
             myMigstagram.updatePic(e.target.files);
         }
     });

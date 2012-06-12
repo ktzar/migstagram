@@ -19,7 +19,9 @@ body{
     padding:0em 0.5em;
 }
 
-.controls{
+.controls .vbox{
+    height:100%;
+    overflow: auto;
 }
 
 .controls button{

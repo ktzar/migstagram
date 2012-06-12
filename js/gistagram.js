@@ -294,10 +294,7 @@ var Migstagram = function(){
                     dist_to_center = Math.floor(Math.pow(Math.sqrt(
                         Math.abs( _y - cnv.height/2) + 
                         Math.abs( _x - cnv.width/2 )
-                    ), 2));
-
-                    //adjust how much it'll darken the image
-                    dist_to_center/=10;
+                    ), 2))/10;
 
                     new_r = pixel.r - dist_to_center;
                     new_g = pixel.g - dist_to_center;

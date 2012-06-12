@@ -92,7 +92,11 @@ $(function(){
     //Accordion
     $('.accordion>.accordion-content').hide();
     $('.accordion>h2').click(function(){
-        $('.accordion>.accordion-content').slideUp();
-        $(this).parent('.accordion').first().find('.accordion-content').slideDown();
+        if ( $(this).hasClass('active') == false ) {
+            $('.accordion>h2').removeClass('active');
+            $(this).addClass('active');
+            $('.accordion>.accordion-content').slideUp();
+            $(this).parent('.accordion').first().find('.accordion-content').slideDown();
+        }
     });
 });

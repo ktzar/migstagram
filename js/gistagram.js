@@ -127,8 +127,8 @@ var Migstagram = function(){
         'bw': function(params, cb) {
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0, ref = 0;
-            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
                     if ( params ) {
                         ref = pixel[params];
@@ -152,8 +152,8 @@ var Migstagram = function(){
         'sepia': function(params, cb) {
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;
-            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
                     pixel.r = pixel.g = pixel.b = Math.min(255, pixel.b);
                     pixel.r = 40+pixel.r;//it'll automatically set it to 255 if higher
@@ -167,14 +167,14 @@ var Migstagram = function(){
                 cb();
             }
         }
+        //cross-colour processing
+        //http://en.wikipedia.org/wiki/Cross_processing
         ,'crossColour': function(params, cb) {
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;
-            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
-                    //cross-colour processing
-                    //http://en.wikipedia.org/wiki/Cross_processing
                     new_r = params[0]*Math.sin(pixel.r/41)+1.2*pixel.r;
                     new_g = params[1]*Math.sin(pixel.g/41)+1.2*pixel.g;
                     new_b = params[2]*Math.sin(pixel.b/41)+1.2*pixel.b;
@@ -193,8 +193,8 @@ var Migstagram = function(){
             //normalise
             //TODO extract into another function with an optional "max"
             var normalise_ratio = 255/max;
-            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
                     pixel.r = Math.min(255, pixel.r * normalise_ratio);
                     pixel.g = Math.min(255, pixel.g * normalise_ratio);
@@ -217,8 +217,8 @@ var Migstagram = function(){
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;
 
-            for ( var _x = 0 ; _x < cnv.width ; _x += pixel_size ) {
-                for ( var _y = 0 ; _y < cnv.height ; _y += pixel_size ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x += pixel_size ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y += pixel_size ) {
 
                     //initialise
                     tmp_avg = new_r = new_g = new_b = 0;
@@ -257,8 +257,8 @@ var Migstagram = function(){
             var imageDataOut = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;
 
-            for ( var _x = 0 ; _x < cnv.width ; _x += 1 ) {
-                for ( var _y = 0 ; _y < cnv.height ; _y += 1 ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x += 1 ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y += 1 ) {
 
                     //initialise
                     tmp_avg = new_r = new_g = new_b = 0;
@@ -290,8 +290,8 @@ var Migstagram = function(){
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0, dist_to_center;
             
-            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
                     
                     //Distance from the current pixel to the center

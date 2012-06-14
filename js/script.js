@@ -43,8 +43,8 @@ $(function(){
         'position': 'absolute'
         ,'top':     canvas_position.top+'px'
         ,'left':    canvas_position.left+'px'
-        ,'width':   canvas_width+'px'
-        ,'height':  canvas_height+'px'
+        ,'width':   (canvas_width+2)+'px'
+        ,'height':  (canvas_height+2)+'px'
     });
     var dropbox_padding = 10;
     $('#dropbox').css({

@@ -298,7 +298,7 @@ var Migstagram = function(){
                     dist_to_center = Math.floor(Math.pow(Math.sqrt(
                         Math.abs( _y - cnv.height/2) + 
                         Math.abs( _x - cnv.width/2 )
-                    ), 2))/10;
+                    ), 2))/8;
 
                     new_r = pixel.r - dist_to_center;
                     new_g = pixel.g - dist_to_center;
@@ -317,6 +317,29 @@ var Migstagram = function(){
                 }
             }
             ctx.putImageData(imageData, 0, 0);
+            
+            //perform callback
+            if ( typeof cb == "function") {
+                cb();
+            }
+        }
+        ,'flip': function(params, cb) {
+            var imageDataIn  = ctx.getImageData(0,0,cnv.width, cnv.height);
+            var imageDataOut = ctx.getImageData(0,0,cnv.width, cnv.height);
+            var pixel;
+            
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
+                    pixel = getPixel(imageDataIn, _x,_y);
+                    if ( params == "vertical" ) {
+                        setPixel(imageDataOut, _x, cnv.height-_y, pixel);
+                    } else {
+                        setPixel(imageDataOut, cnv.width-_x, _y, pixel);
+                    }
+
+                }
+            }
+            ctx.putImageData(imageDataOut, 0, 0);
             
             //perform callback
             if ( typeof cb == "function") {

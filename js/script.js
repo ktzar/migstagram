@@ -91,9 +91,9 @@ $(function(){
 
     //Accordion
     $('.accordion>.accordion-content').hide();
-    $('.accordion>h2').click(function(){
+    $('.accordion>h3').click(function(){
         if ( $(this).hasClass('active') == false ) {
-            $('.accordion>h2').removeClass('active');
+            $('.accordion>h3').removeClass('active');
             $(this).addClass('active');
             $('.accordion>.accordion-content').slideUp();
             $(this).parent('.accordion').first().find('.accordion-content').slideDown();

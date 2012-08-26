@@ -17,22 +17,31 @@ var Migstagram = function(){
             return function(){
                 ctx.fillStyle = 'black';
                 ctx.fillRect(0,0,cnv.width, cnv.height);
-                //Calculate new proportions and offset
-                var new_height, new_width, ratio, x_offset, y_offset;
-                if ( the_img.width > the_img.height ) {
-                    ratio = the_img.width / cnv.width;
-                    new_height = the_img.height / ratio;
-                    new_width = cnv.width;
-                    x_offset = 0;
-                    y_offset = (cnv.height - new_height)/2;
+                //Check if the user doesn't want to resize the image
+                if (document.getElementById('noScale').checked) {
+                    cnv.width = the_img.width;
+                    cnv.height = the_img.height;
+                    ctx = cnv.getContext('2d');
+                    ctx.drawImage(the_img, 0, 0, the_img.width, the_img.height);
+                    //TODO change the canvas size
                 } else {
-                    ratio = the_img.height / cnv.height;
-                    new_height = cnv.height;
-                    new_width = the_img.width / ratio;
-                    y_offset = 0;
-                    x_offset = (cnv.width - new_width)/2;
+                    //Calculate new proportions and offset
+                    var new_height, new_width, ratio, x_offset, y_offset;
+                    if ( the_img.width > the_img.height ) {
+                        ratio = the_img.width / cnv.width;
+                        new_height = the_img.height / ratio;
+                        new_width = cnv.width;
+                        x_offset = 0;
+                        y_offset = (cnv.height - new_height)/2;
+                    } else {
+                        ratio = the_img.height / cnv.height;
+                        new_height = cnv.height;
+                        new_width = the_img.width / ratio;
+                        y_offset = 0;
+                        x_offset = (cnv.width - new_width)/2;
+                    }
+                    ctx.drawImage(the_img, x_offset, y_offset, new_width, new_height);
                 }
-                ctx.drawImage(the_img, x_offset, y_offset, new_width, new_height);
                 that.originalImageData = ctx.getImageData(0,0,cnv.width,cnv.height);
             };
         }(img);
@@ -143,6 +152,42 @@ var Migstagram = function(){
                 }
             }
             ctx.putImageData(imageData, 0, 0);
+            
+            //perform callback
+            if ( typeof cb == "function") {
+                cb();
+            }
+        },
+        'bayer': function(params, cb) {
+            //Now apply
+            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
+            var aa, ab, ba, bb;
+            for ( var _x = 1 ; _x <= cnv.width ; _x += 2 ) {
+                for ( var _y = 1 ; _y <= cnv.height ; _y += 2 ) {
+                    // Process following this pattern
+                    // RG -> {aa}{ab}
+                    // GB -> {ba}{bb}
+                    //Calculate green:
+                    aa = getPixel(imageData, _x,    _y);
+                    ab = getPixel(imageData, _x+1,  _y);
+                    ba = getPixel(imageData, _x,    _y+1);
+                    bb = getPixel(imageData, _x+1,  _y+1);
+
+                    //Blue
+                    ab.b = ba.b = bb.b = aa.b;
+                    //Red
+                    aa.r = ba.r = ab.r = bb.r;
+                    //Green
+                    aa.g = bb.g = parseInt((ab.g + ba.g)/2);
+
+                    //console.log(np.r+','+np.g+','+np.b);
+                    setPixel(imageData, _x,   _y,   aa);
+                    setPixel(imageData, _x+1, _y,   ab);
+                    setPixel(imageData, _x,   _y+1, ba);
+                    setPixel(imageData, _x+1, _y+1, bb);
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);ab.rl
             
             //perform callback
             if ( typeof cb == "function") {

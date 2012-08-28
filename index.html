@@ -11,17 +11,23 @@
         
     </head>
     <body>
-        <div class="uploader">
-            <input type='checkbox' id="noScale"/>Don't scale<br/>
-            <label>File to migstramise: 
-            <input id="image_upload" type="file"/>
-        </div>
         <div class="controls">
+            <div class="logo">
+                <img src="img/logo.png"/>
+            </div>
             <div class="vscroll">
+                <h2>File</h2>
+                <div  class="accordion level1">
+                    <h3>Load and save</h3>
+                    <input id="image_upload" type="file"/>
+                    <button class="save">Save</button>
+                    <h3>Options</h3>
+                    <input type='checkbox' id="noScale"/>Don't scale<br/>
+                </div>
+                <h2>Filters</h2>
                 <div class="accordion level1">
-                    <h2>Filters</h2>
+                    <h3>Colours</h3>
                     <div class="accordion-content">
-                        <h3>Colours</h3>
                         <button class="effect" data-filter="crossColour" data-filter-param="30,-20,10">Cross colour 1</button>
                         <button class="effect" data-filter="crossColour" data-filter-param="10,-30,-20">Cross colour 2</button>
                         <button class="effect" data-filter="sepia">Sepia</button>
@@ -29,28 +35,39 @@
                         <button class="effect" data-filter="bw" data-filter-param="b">Black and White (Blue channel)</button>
                         <button class="effect" data-filter="bw" data-filter-param="r">Black and White (Red channel)</button>
                         <button class="effect" data-filter="bw" data-filter-param="b">Black and White (Green channel)</button>
-                        <hr/>
-                        <h3>Pixelate</h3>
-                        <button class="effect" data-filter="pixelate" data-filter-param="4">Pixelate 4px</button>
-                        <button class="effect" data-filter="pixelate" data-filter-param="10">Pixelate 10px</button>
-                        <button class="effect" data-filter="pixelate" data-filter-param="20">Pixelate 20px</button>
-                        <hr/>
-                        <h3>Blur</h3>
-                        <button class="effect" data-filter="blur" data-filter-param="3">Blur 3px</button>
-                        <hr/>
-                        <h3>Vignettes</h3>
-                        <button class="effect" data-filter="vignette" data-filter-param="circle">Circle</button>
-                        <hr/>
+                        <button class="effect" data-filter="bayer">Bayer filter decode</button>
                     </div>
                 </div>
                 <div class="accordion level1">
-                    <h2>Operations</h2>
+                    <h3>Pixelate</h3>
                     <div class="accordion-content">
-                        <button class="reset">Reset image</button>
-                        <button class="undo">Undo</button>
-                        <button class="save">Save</button>
+                        <button class="effect" data-filter="pixelate" data-filter-param="4">Pixelate 4px</button>
+                        <button class="effect" data-filter="pixelate" data-filter-param="10">Pixelate 10px</button>
+                        <button class="effect" data-filter="pixelate" data-filter-param="20">Pixelate 20px</button>
                     </div>
                 </div>
+                <div class="accordion level1">
+                    <h3>Blur</h3>
+                    <div class="accordion-content">
+                        <button class="effect" data-filter="blur" data-filter-param="3">Blur 3px</button>
+                    </div>
+                </div>
+                <div class="accordion level1">
+                    <h3>Vignettes</h3>
+                    <div class="accordion-content">
+                        <button class="effect" data-filter="vignette" data-filter-param="circle">Circle</button>
+                    </div>
+                </div>
+                <div class="accordion level1">
+                    <h3>Flip</h3>
+                    <div class="accordion-content">
+                        <button class="effect" data-filter="flip" data-filter-param="horizontal">Flip horizontally</button>
+                        <button class="effect" data-filter="flip" data-filter-param="vertical">Flip vertically</button>
+                    </div>
+                </div>
+                <h2>Operations</h2>
+                <button class="reset">Reset image</button>
+                <button class="undo">Undo</button>
             </div>
         </div>
         <canvas width="800px" height="600px" id="editting_canvas"></canvas>

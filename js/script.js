@@ -43,8 +43,8 @@ $(function(){
         'position': 'absolute'
         ,'top':     canvas_position.top+'px'
         ,'left':    canvas_position.left+'px'
-        ,'width':   canvas_width+'px'
-        ,'height':  canvas_height+'px'
+        ,'width':   (canvas_width+2)+'px'
+        ,'height':  (canvas_height+2)+'px'
     });
     var dropbox_padding = 10;
     $('#dropbox').css({
@@ -91,9 +91,9 @@ $(function(){
 
     //Accordion
     $('.accordion>.accordion-content').hide();
-    $('.accordion>h2').click(function(){
+    $('.accordion>h3').click(function(){
         if ( $(this).hasClass('active') == false ) {
-            $('.accordion>h2').removeClass('active');
+            $('.accordion>h3').removeClass('active');
             $(this).addClass('active');
             $('.accordion>.accordion-content').slideUp();
             $(this).parent('.accordion').first().find('.accordion-content').slideDown();

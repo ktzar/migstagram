@@ -136,8 +136,8 @@ var Migstagram = function(){
         'bw': function(params, cb) {
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0, ref = 0;
-            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
                     if ( params ) {
                         ref = pixel[params];
@@ -172,22 +172,15 @@ var Migstagram = function(){
                     ab = getPixel(imageData, _x+1,  _y);
                     ba = getPixel(imageData, _x,    _y+1);
                     bb = getPixel(imageData, _x+1,  _y+1);
-
-                    //Blue
-                    ab.b = ba.b = bb.b = aa.b;
-                    //Red
-                    aa.r = ba.r = ab.r = bb.r;
-                    //Green
-                    aa.g = bb.g = parseInt((ab.g + ba.g)/2);
-
-                    //console.log(np.r+','+np.g+','+np.b);
-                    setPixel(imageData, _x,   _y,   aa);
-                    setPixel(imageData, _x+1, _y,   ab);
-                    setPixel(imageData, _x,   _y+1, ba);
-                    setPixel(imageData, _x+1, _y+1, bb);
+                    aa.b = bb.b;
+                    aa.g = parseInt((ab.g + ba.g)/2);
+                    //Scaled down by 2
+                    setPixel(imageData, _x/2,   _y/2,   aa);
                 }
             }
-            ctx.putImageData(imageData, 0, 0);ab.rl
+            //Scaled down by 2
+            cnv.height /= 2; cnv.width /= 2;
+            ctx.putImageData(imageData, 0, 0);
             
             //perform callback
             if ( typeof cb == "function") {
@@ -197,8 +190,8 @@ var Migstagram = function(){
         'sepia': function(params, cb) {
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;
-            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
                     pixel.r = pixel.g = pixel.b = Math.min(255, pixel.b);
                     pixel.r = 40+pixel.r;//it'll automatically set it to 255 if higher
@@ -212,14 +205,14 @@ var Migstagram = function(){
                 cb();
             }
         }
+        //cross-colour processing
+        //http://en.wikipedia.org/wiki/Cross_processing
         ,'crossColour': function(params, cb) {
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;
-            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
-                    //cross-colour processing
-                    //http://en.wikipedia.org/wiki/Cross_processing
                     new_r = params[0]*Math.sin(pixel.r/41)+1.2*pixel.r;
                     new_g = params[1]*Math.sin(pixel.g/41)+1.2*pixel.g;
                     new_b = params[2]*Math.sin(pixel.b/41)+1.2*pixel.b;
@@ -238,8 +231,8 @@ var Migstagram = function(){
             //normalise
             //TODO extract into another function with an optional "max"
             var normalise_ratio = 255/max;
-            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
                     pixel.r = Math.min(255, pixel.r * normalise_ratio);
                     pixel.g = Math.min(255, pixel.g * normalise_ratio);
@@ -262,8 +255,8 @@ var Migstagram = function(){
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;
 
-            for ( var _x = 0 ; _x < cnv.width ; _x += pixel_size ) {
-                for ( var _y = 0 ; _y < cnv.height ; _y += pixel_size ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x += pixel_size ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y += pixel_size ) {
 
                     //initialise
                     tmp_avg = new_r = new_g = new_b = 0;
@@ -302,8 +295,8 @@ var Migstagram = function(){
             var imageDataOut = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0;
 
-            for ( var _x = 0 ; _x < cnv.width ; _x += 1 ) {
-                for ( var _y = 0 ; _y < cnv.height ; _y += 1 ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x += 1 ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y += 1 ) {
 
                     //initialise
                     tmp_avg = new_r = new_g = new_b = 0;
@@ -335,15 +328,15 @@ var Migstagram = function(){
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0, dist_to_center;
             
-            for ( var _x = 0 ; _x < cnv.width -1; _x ++ ) {
-                for ( var _y = 0 ; _y < cnv.height -1; _y ++ ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
                     
                     //Distance from the current pixel to the center
                     dist_to_center = Math.floor(Math.pow(Math.sqrt(
                         Math.abs( _y - cnv.height/2) + 
                         Math.abs( _x - cnv.width/2 )
-                    ), 2))/10;
+                    ), 2))/8;
 
                     new_r = pixel.r - dist_to_center;
                     new_g = pixel.g - dist_to_center;
@@ -362,6 +355,29 @@ var Migstagram = function(){
                 }
             }
             ctx.putImageData(imageData, 0, 0);
+            
+            //perform callback
+            if ( typeof cb == "function") {
+                cb();
+            }
+        }
+        ,'flip': function(params, cb) {
+            var imageDataIn  = ctx.getImageData(0,0,cnv.width, cnv.height);
+            var imageDataOut = ctx.getImageData(0,0,cnv.width, cnv.height);
+            var pixel;
+            
+            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
+                    pixel = getPixel(imageDataIn, _x,_y);
+                    if ( params == "vertical" ) {
+                        setPixel(imageDataOut, _x, cnv.height-_y, pixel);
+                    } else {
+                        setPixel(imageDataOut, cnv.width-_x, _y, pixel);
+                    }
+
+                }
+            }
+            ctx.putImageData(imageDataOut, 0, 0);
             
             //perform callback
             if ( typeof cb == "function") {

@@ -162,8 +162,8 @@ var Migstagram = function(){
             //Now apply
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var aa, ab, ba, bb;
-            for ( var _x = 1 ; _x <= cnv.width ; _x += 2 ) {
-                for ( var _y = 1 ; _y <= cnv.height ; _y += 2 ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x += 2 ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y += 2 ) {
                     // Process following this pattern
                     // RG -> {aa}{ab}
                     // GB -> {ba}{bb}

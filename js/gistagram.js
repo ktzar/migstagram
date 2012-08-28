@@ -162,32 +162,26 @@ var Migstagram = function(){
             //Now apply
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var aa, ab, ba, bb;
-            for ( var _x = 1 ; _x <= cnv.width ; _x += 2 ) {
-                for ( var _y = 1 ; _y <= cnv.height ; _y += 2 ) {
+            for ( var _x = 0 ; _x <= cnv.width ; _x += 2 ) {
+                for ( var _y = 0 ; _y <= cnv.height ; _y += 2 ) {
                     // Process following this pattern
+                    // http://en.wikipedia.org/wiki/Bayer_filter
                     // RG -> {aa}{ab}
                     // GB -> {ba}{bb}
-                    //Calculate green:
                     aa = getPixel(imageData, _x,    _y);
                     ab = getPixel(imageData, _x+1,  _y);
                     ba = getPixel(imageData, _x,    _y+1);
                     bb = getPixel(imageData, _x+1,  _y+1);
 
-                    //Blue
-                    ab.b = ba.b = bb.b = aa.b;
-                    //Red
-                    aa.r = ba.r = ab.r = bb.r;
-                    //Green
-                    aa.g = bb.g = parseInt((ab.g + ba.g)/2);
-
-                    //console.log(np.r+','+np.g+','+np.b);
-                    setPixel(imageData, _x,   _y,   aa);
-                    setPixel(imageData, _x+1, _y,   ab);
-                    setPixel(imageData, _x,   _y+1, ba);
-                    setPixel(imageData, _x+1, _y+1, bb);
+                    aa.b = bb.b;
+                    aa.g = parseInt((ab.g + ba.g)/2);
+                    //Scaled down by 2
+                    setPixel(imageData, _x/2,   _y/2,   aa);
                 }
             }
-            ctx.putImageData(imageData, 0, 0);ab.rl
+            //Scaled down by 2
+            cnv.height /= 2; cnv.width /= 2;
+            ctx.putImageData(imageData, 0, 0);
             
             //perform callback
             if ( typeof cb == "function") {

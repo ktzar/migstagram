@@ -11,17 +11,24 @@
         
     </head>
     <body>
-        <div class="uploader">
-            <input type='checkbox' id="noScale"/>Don't scale<br/>
-            <label>File to migstramise: 
-            <input id="image_upload" type="file"/>
-        </div>
         <div class="controls">
             <div class="logo">
                 <img src="img/logo.png"/>
             </div>
             <div class="vscroll">
-            <h2>Filters</h2>
+                <h2>File</h2>
+                <div class="accordion level1">
+                    <h3>Load and save</h3>
+                        <label>Load file: </label>
+                        <input id="image_upload" type="file"/>
+                        <button class="save">Save</button>
+                    </div>
+                    <h3>Options</h3>
+                    <div class="accordion-content">
+                        <input type='checkbox' id="noScale"/>Don't scale<br/>
+                    </div>
+                </div>
+                <h2>Filters</h2>
                 <div class="accordion level1">
                     <h3>Colours</h3>
                     <div class="accordion-content">
@@ -65,7 +72,6 @@
                 <h2>Operations</h2>
                 <button class="reset">Reset image</button>
                 <button class="undo">Undo</button>
-                <button class="save">Save</button>
             </div>
         </div>
         <canvas width="800px" height="600px" id="editting_canvas"></canvas>

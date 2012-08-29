@@ -87,13 +87,20 @@ $(function(){
     $('#save').click(function(){
         myMigstagram.save();
     });
-    $('#load_url').click(function(){
-        myMigstagram.loadUrl(prompt('Paste your URL here:'), function(error){
-            if (!error) {
-                $("#dropbox").hide();
-            }
+
+    //Can only be used if served from a server, since we need a proxy to circumvent the tainted canvas with
+    //cross-domain information
+    if (document.location.origin == 'file://') {
+        $('#load_url').hide();
+    } else {
+        $('#load_url').click(function(){
+            myMigstagram.loadUrl(prompt('Paste your URL here:'), function(error){
+                if (!error) {
+                    $("#dropbox").hide();
+                }
+            });
         });
-    });
+    }
 
 
     //Accordion

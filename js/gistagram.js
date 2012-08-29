@@ -126,27 +126,18 @@ var Migstagram = function(){
      */
     this.loadUrl = function(url, cb)
     {
-        //Can only use it in a server, since we need a proxy to circumvent the tainted canvas with
-        //cross-domain information
-        if (document.location.origin == 'file://') {
-            alert("This feature can't used in local mode. Please serve the files from a HTTP server");
-            if (typeof cb == "function") {
-                cb(true);
-            }
-        } else {
-            var img = new Image();
-            img.src = 'image_proxy.php?url='+url;
-            img.crossorigin = '';
-            img.onload = function(){
-                console.log(img);
-                cnv.width   = img.width;
-                cnv.height  = img.height;
-                ctx.drawImage(img, 0,0);
-                that.originalImageData = ctx.getImageData(0,0,cnv.width,cnv.height);
-            }
-            if (typeof cb == "function") {
-                cb(false);
-            }
+        var img = new Image();
+        img.src = 'image_proxy.php?url='+url;
+        img.crossorigin = '';
+        img.onload = function(){
+            console.log(img);
+            cnv.width   = img.width;
+            cnv.height  = img.height;
+            ctx.drawImage(img, 0,0);
+            that.originalImageData = ctx.getImageData(0,0,cnv.width,cnv.height);
+        }
+        if (typeof cb == "function") {
+            cb(false);
         }
     }
 

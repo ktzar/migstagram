@@ -22,6 +22,7 @@ body{
 }
 .controls h2, .controls h3, .controls button{
     cursor: pointer;
+    width: 100%;
 }
 .controls button{
     width:                  100%

@@ -84,8 +84,15 @@ $(function(){
         myMigstagram.undo();
         $('.controls .undo').attr('disabled', 'true').html('Undo');
     }).attr('disabled', 'true');
-    $('.controls .save').click(function(){
+    $('#save').click(function(){
         myMigstagram.save();
+    });
+    $('#load_url').click(function(){
+        myMigstagram.loadUrl(prompt('Paste your URL here:'), function(error){
+            if (!error) {
+                $("#dropbox").hide();
+            }
+        });
     });
 
 

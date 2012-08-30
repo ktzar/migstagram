@@ -344,19 +344,39 @@ var Migstagram = function(){
                 cb();
             }
         }
-        ,'vignette': function(params, cb) {
+        ,'vignette': function(params, cb) { 
+            //accepted params: diamond, rectangle
             var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
             var pixel, new_r, new_g, new_b, tmp_avg, max=0, dist_to_center;
+
+            var darkenFn;
+            if (params == "diamond") {
+                darkenFn = function(x,y){
+                    return Math.floor(
+                        Math.pow(Math.sqrt(
+                            Math.abs( y - cnv.height/2) + 
+                            Math.abs( x - cnv.width/2 )
+                        ), 2)
+                    )/8;
+                };
+            }else if(params == "rectangle") {
+                darkenFn = function(x,y){
+                    return Math.max(
+                        0,
+                        255-x,
+                        255-y,
+                        255-Math.abs(cnv.width-x),
+                        255-Math.abs(cnv.height-y)
+                    );
+                };
+            }
             
             for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
                 for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
                     pixel = getPixel(imageData, _x,_y);
                     
                     //Distance from the current pixel to the center
-                    dist_to_center = Math.floor(Math.pow(Math.sqrt(
-                        Math.abs( _y - cnv.height/2) + 
-                        Math.abs( _x - cnv.width/2 )
-                    ), 2))/8;
+                    dist_to_center = darkenFn(_x,_y);
 
                     new_r = pixel.r - dist_to_center;
                     new_g = pixel.g - dist_to_center;

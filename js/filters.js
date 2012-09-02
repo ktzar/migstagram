@@ -221,16 +221,31 @@ var MigstagramFilters = {
         //minimum and maximum found values
         var min = {r:0, g:0, b:0};
         var max = {r:0, g:0, b:0};
-        //Look for maximum and minimum R, G and B values
-        for ( var _x = 0 ; _x <= this.cnv.width ; _x ++ ) {
-            for ( var _y = 0 ; _y <= this.cnv.height ; _y ++ ) {
-                pixel = this.getPixel(imageData, _x,_y);
-                for(var channel in pixel) {
-                    if (pixel[channel] > max[channel]) {
-                        max[channel] = pixel[channel];
+        var pixel_size = 45; //averaging to avoid peaks of white or black
+        //Look for maximum and minimum R, G and B values by averaging blocks
+        for ( var _x = 0 ; _x <= this.cnv.width ; _x += pixel_size ) {
+            for ( var _y = 0 ; _y <= this.cnv.height ; _y += pixel_size ) {
+                //initialise
+                tmp_avg = 0;
+                var new_pixel = {r:0,g:0,b:0};
+                //calculate average pixel_size/2 px around
+                for (__x = _x - pixel_size/2 ; __x < _x + pixel_size/2 ; __x ++ ) {
+                    for (__y = _y - pixel_size/2 ; __y < _y + pixel_size/2 ; __y ++ ) {
+                        pixel = this.getPixel(imageData, _x,_y);
+                        new_pixel.r += pixel.r;
+                        new_pixel.g += pixel.g;
+                        new_pixel.b += pixel.b;
+                        tmp_avg ++;
                     }
-                    if (pixel[channel] < min[channel]) {
-                        min[channel] = pixel[channel];
+                }
+                //The chosen colour
+                for(var channel in pixel) {
+                    new_pixel[channel] /= tmp_avg;
+                    if (new_pixel[channel] > max[channel]) {
+                        max[channel] = new_pixel[channel];
+                    }
+                    if (new_pixel[channel] < min[channel]) {
+                        min[channel] = new_pixel[channel];
                     }
                 }
             }
@@ -242,7 +257,7 @@ var MigstagramFilters = {
             b: 255/(max.b-min.b)
         };
         console.log(scales);
-        //Now, expand every channel
+        //Now, expand every channel with the calculated offset and scale
         for ( var _x = 0 ; _x <= this.cnv.width ; _x ++ ) {
             for ( var _y = 0 ; _y <= this.cnv.height ; _y ++ ) {
                 pixel = this.getPixel(imageData, _x,_y);

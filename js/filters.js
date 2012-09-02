@@ -19,11 +19,6 @@ var MigstagramFilters = {
             }
         }
         this.ctx.putImageData(imageData, 0, 0);
-        
-        //perform callback
-        if ( typeof cb == "function") {
-            cb();
-        }
     },
     'bayer': function(params, cb) {
         //Now apply
@@ -48,11 +43,6 @@ var MigstagramFilters = {
         //Scaled down by 2
         this.cnv.height /= 2; this.cnv.width /= 2;
         this.ctx.putImageData(imageData, 0, 0);
-        
-        //perform callback
-        if ( typeof cb == "function") {
-            cb();
-        }
     },
     'sepia': function(params, cb) {
         var imageData = this.ctx.getImageData(0,0,this.cnv.width, this.cnv.height);
@@ -66,11 +56,6 @@ var MigstagramFilters = {
             }
         }
         this.ctx.putImageData(imageData, 0, 0);
-        
-        //perform callback
-        if ( typeof cb == "function") {
-            cb();
-        }
     }
     //cross-colour processing
     //http://en.wikipedia.org/wiki/Cross_processing
@@ -83,12 +68,10 @@ var MigstagramFilters = {
                 new_r = params[0]*Math.sin(pixel.r/41)+1.2*pixel.r;
                 new_g = params[1]*Math.sin(pixel.g/41)+1.2*pixel.g;
                 new_b = params[2]*Math.sin(pixel.b/41)+1.2*pixel.b;
-
                 tmp_avg = (new_r + new_g + new_b) / 3;
                 if ( (new_r + new_g + new_b) / 3 > max ) {
                     max = tmp_avg;
                 } 
-
                 pixel.r = Math.min(255, new_r);
                 pixel.g = Math.min(255, new_g);
                 pixel.b = Math.min(255, new_b);
@@ -108,23 +91,15 @@ var MigstagramFilters = {
             }
         }
         this.ctx.putImageData(imageData, 0, 0);
-        
-        //perform callback
-        if ( typeof cb == "function") {
-            cb();
-        }
     }
     ,'pixelate': function(params, cb) {
         //Parse parameters
         var pixel_size  = parseInt(params[0]);
         var halfpixel_size = Math.floor(pixel_size);
-
         var imageData = this.ctx.getImageData(0,0,this.cnv.width, this.cnv.height);
         var pixel, new_r, new_g, new_b, tmp_avg, max=0;
-
         for ( var _x = 0 ; _x <= this.cnv.width ; _x += pixel_size ) {
             for ( var _y = 0 ; _y <= this.cnv.height ; _y += pixel_size ) {
-
                 //initialise
                 tmp_avg = new_r = new_g = new_b = 0;
                 //calculate average halfpixel_size around
@@ -149,11 +124,6 @@ var MigstagramFilters = {
             }
         }
         this.ctx.putImageData(imageData, 0, 0);
-        
-        //perform callback
-        if ( typeof cb == "function") {
-            cb();
-        }
     }
     ,'blur': function(params, cb) {
         //Parse parameters
@@ -161,10 +131,8 @@ var MigstagramFilters = {
         var imageDataIn  = this.ctx.getImageData(0,0,this.cnv.width, this.cnv.height);
         var imageDataOut = this.ctx.getImageData(0,0,this.cnv.width, this.cnv.height);
         var pixel, new_r, new_g, new_b, tmp_avg, max=0;
-
         for ( var _x = 0 ; _x <= this.cnv.width ; _x += 1 ) {
             for ( var _y = 0 ; _y <= this.cnv.height ; _y += 1 ) {
-
                 //initialise
                 tmp_avg = new_r = new_g = new_b = 0;
                 //calculate average blur_around pixels around
@@ -185,17 +153,11 @@ var MigstagramFilters = {
             }
         }
         this.ctx.putImageData(imageDataOut, 0, 0);
-        
-        //perform callback
-        if ( typeof cb == "function") {
-            cb();
-        }
     }
     ,'vignette': function(params, cb) { 
         //accepted params: diamond, rectangle
         var imageData = this.ctx.getImageData(0,0,this.cnv.width, this.cnv.height);
         var pixel, new_r, new_g, new_b, tmp_avg, max=0, dist_to_center;
-
         var darkenFn;
         if (params == "diamond") {
             darkenFn = function(x,y){
@@ -217,24 +179,18 @@ var MigstagramFilters = {
                 );
             };
         }
-        
         for ( var _x = 0 ; _x <= this.cnv.width ; _x ++ ) {
             for ( var _y = 0 ; _y <= this.cnv.height ; _y ++ ) {
                 pixel = this.getPixel(imageData, _x,_y);
-                
                 //Distance from the current pixel to the center
                 dist_to_center = darkenFn(_x,_y);
-
                 new_r = pixel.r - dist_to_center;
                 new_g = pixel.g - dist_to_center;
                 new_b = pixel.b - dist_to_center;
-
-
                 tmp_avg = (new_r + new_g + new_b) / 3;
                 if ( (new_r + new_g + new_b) / 3 > max ) {
                     max = tmp_avg;
                 } 
-
                 pixel.r = Math.min(255, new_r);
                 pixel.g = Math.min(255, new_g);
                 pixel.b = Math.min(255, new_b);
@@ -242,17 +198,11 @@ var MigstagramFilters = {
             }
         }
         this.ctx.putImageData(imageData, 0, 0);
-        
-        //perform callback
-        if ( typeof cb == "function") {
-            cb();
-        }
     }
     ,'flip': function(params, cb) {
         var imageDataIn  = this.ctx.getImageData(0,0,this.cnv.width, this.cnv.height);
         var imageDataOut = this.ctx.getImageData(0,0,this.cnv.width, this.cnv.height);
         var pixel;
-        
         for ( var _x = 0 ; _x <= this.cnv.width ; _x ++ ) {
             for ( var _y = 0 ; _y <= this.cnv.height ; _y ++ ) {
                 pixel = this.getPixel(imageDataIn, _x,_y);
@@ -261,14 +211,19 @@ var MigstagramFilters = {
                 } else {
                     this.setPixel(imageDataOut, this.cnv.width-_x, _y, pixel);
                 }
-
             }
         }
         this.ctx.putImageData(imageDataOut, 0, 0);
-        
-        //perform callback
-        if ( typeof cb == "function") {
-            cb();
+    },
+    'autolevels': function(params, cb) {
+        var imageData = this.ctx.getImageData(0,0,this.cnv.width, this.cnv.height);
+        var pixel, new_r, new_g, new_b, tmp_avg, max=0, ref = 0;
+        for ( var _x = 0 ; _x <= this.cnv.width ; _x ++ ) {
+            for ( var _y = 0 ; _y <= this.cnv.height ; _y ++ ) {
+                pixel = this.getPixel(imageData, _x,_y);
+                this.setPixel(imageData, _x, _y, pixel);
+            }
         }
-    }
+        this.ctx.putImageData(imageData, 0, 0);
+    },
 };

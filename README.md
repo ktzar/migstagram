@@ -1,4 +1,5 @@
 A Javascript canvas editor with different effects resembling old cameras
+----
 Copyright (C) 2012 kTzAR
 
 This program is free software; you can redistribute it and/or

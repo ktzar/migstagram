@@ -34,6 +34,10 @@ $(function(){
     dropbox.addEventListener("drop",        dropHandler, false);
 
     myMigstagram = new Migstagram();
+    for (var filter in MigstagramFilters) {
+        console.log('adding '+filter+' filter');
+        myMigstagram.addFilter(filter, MigstagramFilters[filter]);
+    }
 
     //position the loading div on top of the canvas and hide it
     var canvas_position = ($('#editting_canvas').position());

@@ -5,9 +5,13 @@ var Migstagram = function(){
     var reader = new FileReader();
     var cnv = document.getElementById('editting_canvas');
     var ctx = cnv.getContext('2d');
+    //Make these available
+    that.cnv = cnv;
+    that.ctx = ctx;
 
     this.originalImageData = null;
     this.previousImageData = null;
+
 
 
     reader.onload = function(e) {
@@ -62,7 +66,7 @@ var Migstagram = function(){
         imageData.data[index+1] = rgba.g;
         imageData.data[index+2] = rgba.b;
         imageData.data[index+3] = rgba.a;
-    }
+    }; that.setPixel = setPixel;
 
     /**
      * read a pixel in a imagedata structure
@@ -75,7 +79,7 @@ var Migstagram = function(){
             ,b:imageData.data[index+2]
             ,a:imageData.data[index+3]
         };
-    }
+    }; that.getPixel = getPixel;
 
 
 
@@ -142,288 +146,22 @@ var Migstagram = function(){
     }
 
     this.callFilter = function(filterName, params, cb) {
+        //Make sure "cb" is a function
+        if (typeof cb != "function") cb = function(){};
         that.previousImageData = ctx.getImageData(0,0,cnv.width, cnv.height);
         if ( typeof that.filters[filterName] == 'function' ) {
-            that.filters[filterName](params, cb);
+            that.filters[filterName].apply(that, [params, cb]);
+            cb(true);
         } else {
-            console.log('Effect '+effect+ ' not available');
+            console.log('Effect '+filterName+ ' not available');
+            cb(false);
         }
     }
 
+    this.addFilter = function(name, fn){
+        this.filters[name] = fn;
+    };
 
-    this.filters = {
-        //params is r g or b, the reference channel, defaults to an average of the 3
-        'bw': function(params, cb) {
-            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
-            var pixel, new_r, new_g, new_b, tmp_avg, max=0, ref = 0;
-            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
-                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
-                    pixel = getPixel(imageData, _x,_y);
-                    if ( params ) {
-                        ref = pixel[params];
-                    }
-                    if ( params != false && typeof pixel[params] != "undefined") {
-                        ref = pixel[params];
-                    }else{
-                        ref = (pixel.r + pixel.g + pixel.b)/3;
-                    }
-                    pixel.r = pixel.g = pixel.b = ref;
-                    setPixel(imageData, _x, _y, pixel);
-                }
-            }
-            ctx.putImageData(imageData, 0, 0);
-            
-            //perform callback
-            if ( typeof cb == "function") {
-                cb();
-            }
-        },
-        'bayer': function(params, cb) {
-            //Now apply
-            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
-            var aa, ab, ba, bb;
-            for ( var _x = 0 ; _x <= cnv.width ; _x += 2 ) {
-                for ( var _y = 0 ; _y <= cnv.height ; _y += 2 ) {
-                    // Process following this pattern
-                    // RG -> {aa}{ab}
-                    // GB -> {ba}{bb}
-                    //Calculate green:
-                    aa = getPixel(imageData, _x,    _y);
-                    ab = getPixel(imageData, _x+1,  _y);
-                    ba = getPixel(imageData, _x,    _y+1);
-                    bb = getPixel(imageData, _x+1,  _y+1);
-                    aa.b = bb.b;
-                    aa.g = parseInt((ab.g + ba.g)/2);
-                    //Scaled down by 2
-                    setPixel(imageData, _x/2,   _y/2,   aa);
-                }
-            }
-            //Scaled down by 2
-            cnv.height /= 2; cnv.width /= 2;
-            ctx.putImageData(imageData, 0, 0);
-            
-            //perform callback
-            if ( typeof cb == "function") {
-                cb();
-            }
-        },
-        'sepia': function(params, cb) {
-            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
-            var pixel, new_r, new_g, new_b, tmp_avg, max=0;
-            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
-                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
-                    pixel = getPixel(imageData, _x,_y);
-                    pixel.r = pixel.g = pixel.b = Math.min(255, pixel.b);
-                    pixel.r = 40+pixel.r;//it'll automatically set it to 255 if higher
-                    setPixel(imageData, _x, _y, pixel);
-                }
-            }
-            ctx.putImageData(imageData, 0, 0);
-            
-            //perform callback
-            if ( typeof cb == "function") {
-                cb();
-            }
-        }
-        //cross-colour processing
-        //http://en.wikipedia.org/wiki/Cross_processing
-        ,'crossColour': function(params, cb) {
-            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
-            var pixel, new_r, new_g, new_b, tmp_avg, max=0;
-            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
-                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
-                    pixel = getPixel(imageData, _x,_y);
-                    new_r = params[0]*Math.sin(pixel.r/41)+1.2*pixel.r;
-                    new_g = params[1]*Math.sin(pixel.g/41)+1.2*pixel.g;
-                    new_b = params[2]*Math.sin(pixel.b/41)+1.2*pixel.b;
-
-                    tmp_avg = (new_r + new_g + new_b) / 3;
-                    if ( (new_r + new_g + new_b) / 3 > max ) {
-                        max = tmp_avg;
-                    } 
-
-                    pixel.r = Math.min(255, new_r);
-                    pixel.g = Math.min(255, new_g);
-                    pixel.b = Math.min(255, new_b);
-                    setPixel(imageData, _x, _y, pixel);
-                }
-            }
-            //normalise
-            //TODO extract into another function with an optional "max"
-            var normalise_ratio = 255/max;
-            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
-                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
-                    pixel = getPixel(imageData, _x,_y);
-                    pixel.r = Math.min(255, pixel.r * normalise_ratio);
-                    pixel.g = Math.min(255, pixel.g * normalise_ratio);
-                    pixel.b = Math.min(255, pixel.b * normalise_ratio);
-                    setPixel(imageData, _x, _y, pixel);
-                }
-            }
-            ctx.putImageData(imageData, 0, 0);
-            
-            //perform callback
-            if ( typeof cb == "function") {
-                cb();
-            }
-        }
-        ,'pixelate': function(params, cb) {
-            //Parse parameters
-            var pixel_size  = parseInt(params[0]);
-            var halfpixel_size = Math.floor(pixel_size);
-
-            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
-            var pixel, new_r, new_g, new_b, tmp_avg, max=0;
-
-            for ( var _x = 0 ; _x <= cnv.width ; _x += pixel_size ) {
-                for ( var _y = 0 ; _y <= cnv.height ; _y += pixel_size ) {
-
-                    //initialise
-                    tmp_avg = new_r = new_g = new_b = 0;
-                    //calculate average halfpixel_size around
-                    for (__x = _x - pixel_size/2 ; __x < _x + pixel_size/2 ; __x ++ ) {
-                        for (__y = _y - pixel_size/2 ; __y < _y + pixel_size/2 ; __y ++ ) {
-                            pixel = getPixel(imageData, _x,_y);
-                            new_r += pixel.r;
-                            new_g += pixel.g;
-                            new_b += pixel.b;
-                            tmp_avg ++;
-                        }
-                    }
-                    //The chosen colour
-                    new_r /= tmp_avg; new_g /= tmp_avg; new_b /= tmp_avg;
-                    pixel.r = new_r; pixel.g = new_g; pixel.b = new_b;
-                    //Set it in the surrounding pixels
-                    for (__x = _x - pixel_size/2 ; __x < _x + pixel_size/2 ; __x ++ ) {
-                        for (__y = _y - pixel_size/2 ; __y < _y + pixel_size/2 ; __y ++ ) {
-                            setPixel(imageData, __x, __y, pixel);
-                        }
-                    }
-                }
-            }
-            ctx.putImageData(imageData, 0, 0);
-            
-            //perform callback
-            if ( typeof cb == "function") {
-                cb();
-            }
-        }
-        ,'blur': function(params, cb) {
-            //Parse parameters
-            var blur_amount    = Math.max(2,parseInt(params[0]));
-            var imageDataIn  = ctx.getImageData(0,0,cnv.width, cnv.height);
-            var imageDataOut = ctx.getImageData(0,0,cnv.width, cnv.height);
-            var pixel, new_r, new_g, new_b, tmp_avg, max=0;
-
-            for ( var _x = 0 ; _x <= cnv.width ; _x += 1 ) {
-                for ( var _y = 0 ; _y <= cnv.height ; _y += 1 ) {
-
-                    //initialise
-                    tmp_avg = new_r = new_g = new_b = 0;
-                    //calculate average blur_around pixels around
-                    for (var __x = _x - blur_amount ; __x < _x + blur_amount ; __x ++ ) {
-                        for (var __y = _y - blur_amount ; __y < _y + blur_amount ; __y ++ ) {
-                            pixel = getPixel(imageDataIn, __x,__y);
-                            new_r += pixel.r;
-                            new_g += pixel.g;
-                            new_b += pixel.b;
-                            tmp_avg ++;
-                        }
-                    }
-                    //The chosen colour
-                    new_r /= tmp_avg; new_g /= tmp_avg; new_b /= tmp_avg;
-                    pixel.r = new_r;pixel.g = new_g; pixel.b = new_b;
-                    //Set it in the surrounding pixels
-                    setPixel(imageDataOut, _x, _y, pixel);
-                }
-            }
-            ctx.putImageData(imageDataOut, 0, 0);
-            
-            //perform callback
-            if ( typeof cb == "function") {
-                cb();
-            }
-        }
-        ,'vignette': function(params, cb) { 
-            //accepted params: diamond, rectangle
-            var imageData = ctx.getImageData(0,0,cnv.width, cnv.height);
-            var pixel, new_r, new_g, new_b, tmp_avg, max=0, dist_to_center;
-
-            var darkenFn;
-            if (params == "diamond") {
-                darkenFn = function(x,y){
-                    return Math.floor(
-                        Math.pow(Math.sqrt(
-                            Math.abs( y - cnv.height/2) + 
-                            Math.abs( x - cnv.width/2 )
-                        ), 2)
-                    )/8;
-                };
-            }else if(params == "rectangle") {
-                darkenFn = function(x,y){
-                    return Math.max(
-                        0,
-                        255-x,
-                        255-y,
-                        255-Math.abs(cnv.width-x),
-                        255-Math.abs(cnv.height-y)
-                    );
-                };
-            }
-            
-            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
-                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
-                    pixel = getPixel(imageData, _x,_y);
-                    
-                    //Distance from the current pixel to the center
-                    dist_to_center = darkenFn(_x,_y);
-
-                    new_r = pixel.r - dist_to_center;
-                    new_g = pixel.g - dist_to_center;
-                    new_b = pixel.b - dist_to_center;
-
-
-                    tmp_avg = (new_r + new_g + new_b) / 3;
-                    if ( (new_r + new_g + new_b) / 3 > max ) {
-                        max = tmp_avg;
-                    } 
-
-                    pixel.r = Math.min(255, new_r);
-                    pixel.g = Math.min(255, new_g);
-                    pixel.b = Math.min(255, new_b);
-                    setPixel(imageData, _x, _y, pixel);
-                }
-            }
-            ctx.putImageData(imageData, 0, 0);
-            
-            //perform callback
-            if ( typeof cb == "function") {
-                cb();
-            }
-        }
-        ,'flip': function(params, cb) {
-            var imageDataIn  = ctx.getImageData(0,0,cnv.width, cnv.height);
-            var imageDataOut = ctx.getImageData(0,0,cnv.width, cnv.height);
-            var pixel;
-            
-            for ( var _x = 0 ; _x <= cnv.width ; _x ++ ) {
-                for ( var _y = 0 ; _y <= cnv.height ; _y ++ ) {
-                    pixel = getPixel(imageDataIn, _x,_y);
-                    if ( params == "vertical" ) {
-                        setPixel(imageDataOut, _x, cnv.height-_y, pixel);
-                    } else {
-                        setPixel(imageDataOut, cnv.width-_x, _y, pixel);
-                    }
-
-                }
-            }
-            ctx.putImageData(imageDataOut, 0, 0);
-            
-            //perform callback
-            if ( typeof cb == "function") {
-                cb();
-            }
-        }
-    }
+    this.filters = { }
 };
 

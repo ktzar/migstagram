@@ -150,7 +150,10 @@ var Migstagram = function(){
         if (typeof cb != "function") cb = function(){};
         that.previousImageData = ctx.getImageData(0,0,cnv.width, cnv.height);
         if ( typeof that.filters[filterName] == 'function' ) {
+            var start = new Date();
             that.filters[filterName].apply(that, [params, cb]);
+            var end = new Date();
+            console.log("Filter took "+(end-start)+"ms");
             cb(true);
         } else {
             console.log('Effect '+filterName+ ' not available');

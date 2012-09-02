@@ -215,6 +215,26 @@ var MigstagramFilters = {
         }
         this.ctx.putImageData(imageDataOut, 0, 0);
     },
+    'rotate': function(params, cb) {
+        var imageDataIn  = this.ctx.getImageData(0,0,this.cnv.width, this.cnv.height);
+        var imageDataOut = this.ctx.getImageData(0,0,this.cnv.height, this.cnv.width);
+        var pixel;
+        for ( var _x = 0 ; _x <= this.cnv.width ; _x ++ ) {
+            for ( var _y = 0 ; _y <= this.cnv.height ; _y ++ ) {
+                pixel = this.getPixel(imageDataIn, _x,_y);
+                if (params == "clockwise") {
+                    this.setPixel(imageDataOut, this.cnv.height - _y, _x, pixel);
+                }else{
+                    this.setPixel(imageDataOut, _y, this.cnv.width - _x, pixel);
+                }
+            }
+        }
+        var tmp = this.cnv.width;
+        this.cnv.width = this.cnv.height;
+        this.cnv.height = tmp;
+        this.ctx = this.cnv.getContext('2d');
+        this.ctx.putImageData(imageDataOut, 0, 0);
+    },
     'autolevels': function(params, cb) {
         var imageData = this.ctx.getImageData(0,0,this.cnv.width, this.cnv.height);
         var pixel;

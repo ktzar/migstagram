@@ -160,22 +160,22 @@ var MigstagramFilters = {
         var pixel, new_r, new_g, new_b, tmp_avg, max=0, dist_to_center;
         var darkenFn;
         if (params == "diamond") {
-            darkenFn = function(x,y){
+            darkenFn = function(x,y,cnv){
                 return Math.floor(
                     Math.pow(Math.sqrt(
-                        Math.abs( y - this.cnv.height/2) + 
-                        Math.abs( x - this.cnv.width/2 )
+                        Math.abs( y - cnv.height/2) + 
+                        Math.abs( x - cnv.width/2 )
                     ), 2)
                 )/8;
             };
         }else if(params == "rectangle") {
-            darkenFn = function(x,y){
+            darkenFn = function(x,y,cnv){
                 return Math.max(
                     0,
                     255-x,
                     255-y,
-                    255-Math.abs(this.cnv.width-x),
-                    255-Math.abs(this.cnv.height-y)
+                    255-Math.abs(cnv.width-x),
+                    255-Math.abs(cnv.height-y)
                 );
             };
         }
@@ -183,7 +183,7 @@ var MigstagramFilters = {
             for ( var _y = 0 ; _y <= this.cnv.height ; _y ++ ) {
                 pixel = this.getPixel(imageData, _x,_y);
                 //Distance from the current pixel to the center
-                dist_to_center = darkenFn(_x,_y);
+                dist_to_center = darkenFn(_x,_y, this.cnv);
                 new_r = pixel.r - dist_to_center;
                 new_g = pixel.g - dist_to_center;
                 new_b = pixel.b - dist_to_center;

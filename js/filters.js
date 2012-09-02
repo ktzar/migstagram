@@ -233,7 +233,6 @@ var MigstagramFilters = {
                         min[channel] = pixel[channel];
                     }
                 }
-                //this.setPixel(imageData, _x, _y, pixel);
             }
         }
         var offsets = min;

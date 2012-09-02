@@ -217,13 +217,44 @@ var MigstagramFilters = {
     },
     'autolevels': function(params, cb) {
         var imageData = this.ctx.getImageData(0,0,this.cnv.width, this.cnv.height);
-        var pixel, new_r, new_g, new_b, tmp_avg, max=0, ref = 0;
+        var pixel;
+        //minimum and maximum found values
+        var min = {r:0, g:0, b:0};
+        var max = {r:0, g:0, b:0};
+        //Look for maximum and minimum R, G and B values
         for ( var _x = 0 ; _x <= this.cnv.width ; _x ++ ) {
             for ( var _y = 0 ; _y <= this.cnv.height ; _y ++ ) {
                 pixel = this.getPixel(imageData, _x,_y);
+                for(var channel in pixel) {
+                    if (pixel[channel] > max[channel]) {
+                        max[channel] = pixel[channel];
+                    }
+                    if (pixel[channel] < min[channel]) {
+                        min[channel] = pixel[channel];
+                    }
+                }
+                //this.setPixel(imageData, _x, _y, pixel);
+            }
+        }
+        var offsets = min;
+        var scales  = {
+            r: 255/(max.r-min.r),
+            g: 255/(max.g-min.g),
+            b: 255/(max.b-min.b)
+        };
+        console.log(scales);
+        //Now, expand every channel
+        for ( var _x = 0 ; _x <= this.cnv.width ; _x ++ ) {
+            for ( var _y = 0 ; _y <= this.cnv.height ; _y ++ ) {
+                pixel = this.getPixel(imageData, _x,_y);
+                pixel.r = parseInt((pixel.r*scales.r) + offsets.r);
+                pixel.g = parseInt((pixel.g*scales.g) + offsets.g);
+                pixel.b = parseInt((pixel.b*scales.b) + offsets.b);
                 this.setPixel(imageData, _x, _y, pixel);
             }
         }
+        console.log('Max', max);
+        console.log('Min', min);
         this.ctx.putImageData(imageData, 0, 0);
     },
 };
